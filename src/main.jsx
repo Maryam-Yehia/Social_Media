@@ -12,19 +12,19 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
-import User from './pages/profile/user';
+import User from './pages/profile/User';
 import PostDetails from './pages/Postdetails/Postdetails';
 
 const route = createBrowserRouter([
   {path: '/', element:
   //  <Protectedrouter>
     <Layout />
-    // </Protectedrouter> 
+    // </Protectedrouter>
     , children:[
     {index:true, element: <Protectedrouter> <Home /> </Protectedrouter> },
     {path:'posts/:id' , element:<Protectedrouter> <PostDetails/> </Protectedrouter>},
     {path: '/profile/:id', element: <Protectedrouter> <User /> </Protectedrouter>},
-    {path: '/login', element: 
+    {path: '/login', element:
     <AuthProtectedRouting>
       <Login />
       </AuthProtectedRouting>
