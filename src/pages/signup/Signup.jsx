@@ -1,5 +1,5 @@
 import { Button, Checkbox, Label, Select, TextInput } from "flowbite-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,19 +7,25 @@ import {  object } from "zod";
 import * as z from "zod";
 import Errormsg from "../../componants/shared/Errormsg";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 export default function Signup() {
-
+  const router = useNavigate();
+  
   const schema = z.object({
     name: z.string().min(3),
     email: z.email() ,
-    password:z.string().min(8).regex(/^[a-zA-Z]\d/),
-    rePassword:z.string().refine((val)=> val === watch('password')),
-    gender:z.literal(["Female","Male"]),
+    password:z.string().min(8),
+    rePassword:z.string().refine((val)=> val === watch('password') , "rePassword not match with password"),
+    gender:z.literal(["female","male"]),
     dateOfBirth:z.string()
   })
-
+  
   const {register ,handleSubmit ,watch ,formState:{errors}}= useForm({resolver:zodResolver(schema)});
+  
+  console.log(watch("password"));
+  console.log(watch("rePassword"));
+  console.log(watch("gender"));
 
   async function signup(data){
     try {
@@ -30,8 +36,13 @@ export default function Signup() {
         }
       )
       console.log(res);
+      toast.success("success");
+      router('/login');
+      return res;
     } catch (error) {
       console.log(error);
+      toast.error(error?.response?.data?.error)
+      return error;
     }
   }
 
@@ -67,23 +78,23 @@ export default function Signup() {
             <Errormsg>{errors?.password?.message}</Errormsg>
       </div>
 
-      {/* RePassword */}
+      {/* rePassword */}
       <div>
         <div className="mb-2 block">
-          <Label htmlFor="rePassword1">Your repassword</Label>
+          <Label htmlFor="rePassword1">Your rePassword</Label>
         </div>
-        <TextInput id="rePassword1" type="password" placeholder="*********" {...register("repassword")} />
+        <TextInput required id="rePassword1" type="password" placeholder="*********" {...register("rePassword")} />
             <Errormsg>{errors?.rePassword?.message}</Errormsg>
       </div>
 
       {/* Gender */}
       <div className="max-w-md">
         <div className="mb-2 ">
-          <Label htmlFor="gender">Select your Gender</Label>
+          <Label htmlFor="Gender">Select your Gender</Label>
         </div>
-        <Select id="gender" className="cursor-pointer" {...register('gender')}>
-          <option default>Female</option>
-          <option>Male</option>
+        <Select required id="Gender" className="cursor-pointer" {...register('gender')} >
+          <option value="female">female</option>
+          <option value="male" >male</option>
         </Select>
             <Errormsg>{errors?.gender?.message}</Errormsg>
       </div>
